@@ -1,1 +1,3 @@
-{ :paths ["src" "test"] }
+{:paths ["src" "test"]
+ :deps {org.clojure/tools.cli {:mvn/version "1.0.194"}}
+ :aliases {:cli {:main-opts ["-m" clogit.core]}}}
