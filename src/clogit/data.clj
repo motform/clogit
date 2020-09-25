@@ -12,7 +12,6 @@
 
 (def git-dir ".ugit")
 (def obj-dir (str git-dir "/objects/"))
-(def null-byte (byte 0x00))
 
 (defn init []
   (.mkdir (io/file git-dir))
@@ -21,7 +20,7 @@
 (defn tag-with [obj type]
   (let [tag (utils/key->bytes type)
         obj (utils/str->bytes obj)
-        null (utils/str->bytes null-byte)]
+        null (utils/str->bytes "\0")]
     (byte-array (concat tag null obj))))
 
 (defn hash-object
