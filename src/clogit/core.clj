@@ -10,7 +10,7 @@
   (-> arguments first data/hash-object println)) ; we assume there is only one file in the "arguments" seq
 
 (defn cat-file [{:keys [arguments]}]
-  (-> arguments first data/oid->object println))
+  (-> arguments first (data/oid->object nil) println))
 
 (def actions
   {"init" init
@@ -43,12 +43,13 @@
       ((actions action) args))))
 
 (comment
+  ;;; Part 1->3
   (cli/parse-opts ["foo"] cli-opts :in-order true)
   (validate-args ["hash-object" "foo/bar"])
-
   (-main)
   (-main "init")
+
+  ;;; Part 4->5
   (spit "bla" "foo bar\n")
   (-main "hash-object" "bla")
-  (-main "cat-file" "-1550592180")
-  )
+  (-main "cat-file" "2fca24a0e1432ead5065dc759fbc33cf4b7934e055c9f1dd6a8f158d05143dae"))
