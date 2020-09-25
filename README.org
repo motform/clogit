@@ -1,0 +1,7 @@
+* Clogit, ugit in Clojure
+  This repository contains my version of the [[https://www.leshenko.net/p/ugit/][µgit]] git implementation as outlined in Nikita's great guide. I thought it would be a nice challenge to work through the text and simultaneously translate it into Clojure, my preferred language, and figured I might as well publish it in the case that someone else gets the same idea. It’s not complete yet, but you probably figured as much.
+
+  The structure and code aims to replicate the Python original, preferring simple solutions, clj idioms and as few dependencies as possible. Notable differences include using the ~hash~ function from ~clojure.core~ as opposed to SHA-1. 
+
+  As JVM Clojure suffers from its infamous startup time, exploring the implementation is best done in the repl. The main interactions are kept in rich comments at the end of each file (primarily ~core.clj~). If you are hellbent on running it in a shell, compiling it with Graal or porting it to [[https://github.com/borkdude/babashka][babashka]] are probably your best options.
+

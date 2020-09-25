@@ -17,23 +17,23 @@
    "hash-object" hash-object
    "cat-file" cat-file})
 
-(defn valid-arg? [arg actions]
-  (actions arg))
-
 (def cli-opts
   [["-h" "--help"]])
+
+(defn valid-arg? [arg] (actions arg))
 
 (defn validate-args [args]
   (let [{:keys [options arguments errors summary] :as args} (cli/parse-opts args cli-opts :in-order true)]
     (cond
       (:help options) {:exit-msg summary :ok? true}
       errors {:exit-msg errors}
-      (valid-arg? (first arguments) actions) (-> args (assoc :action (first arguments)) (update :arguments rest))
+      (valid-arg? (first arguments))
+      (-> args (assoc :action (first arguments)) (update :arguments rest))
       :else {:exit-msg summary})))
 
 (defn exit [status msg]
   (println msg)
-  ;; (System/exit status)
+  ;; (System/exit status) ;; TODO add repl? predicate
   (println "exit with status " status)) 
 
 (defn -main [& args]
@@ -45,8 +45,10 @@
 (comment
   (cli/parse-opts ["foo"] cli-opts :in-order true)
   (validate-args ["hash-object" "foo/bar"])
+
   (-main)
   (-main "init")
+  (spit "bla" "foo bar\n")
   (-main "hash-object" "bla")
   (-main "cat-file" "-1550592180")
   )
