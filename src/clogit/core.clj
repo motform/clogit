@@ -1,5 +1,6 @@
 (ns clogit.core
   (:require [clojure.tools.cli :as cli]
+            [clogit.base :as base]
             [clogit.data :as data])
   (:gen-class))
 
@@ -12,10 +13,14 @@
 (defn cat-file [{:keys [arguments]}]
   (-> arguments first (data/oid->object nil) println))
 
+(defn write-tree [args]
+  (base/write-tree))
+
 (def actions
   {"init" init
    "hash-object" hash-object
-   "cat-file" cat-file})
+   "cat-file" cat-file
+   "write-tree" write-tree})
 
 (def cli-opts
   [["-h" "--help"]])
@@ -52,4 +57,8 @@
   ;;; Part 4->5
   (spit "bla" "foo bar\n")
   (-main "hash-object" "bla")
-  (-main "cat-file" "2fca24a0e1432ead5065dc759fbc33cf4b7934e055c9f1dd6a8f158d05143dae"))
+  (-main "cat-file" "2fca24a0e1432ead5065dc759fbc33cf4b7934e055c9f1dd6a8f158d05143dae")
+
+  ;;; Part 8
+  (-main "write-tree")
+  )

@@ -25,8 +25,7 @@
     (byte-array (concat tag null obj))))
 
 (defn hash-object
-  ([file]
-   (hash-object file :blob))
+  ([file] (hash-object file :blob))
   ([file type]
    (let [obj (-> file slurp (tag-with type))
          oid (utils/sha256 (String. obj))]
@@ -38,8 +37,7 @@
   (= (String. tag) (name expected)))
 
 (defn oid->object
-  ([oid]
-   (oid->object oid :blob))
+  ([oid] (oid->object oid :blob))
   ([oid expected]
    (let [obj (utils/path->bytes (str obj-dir oid))
          [tag data] (utils/split-bytes-by #(= % (byte 0x00)) obj)]

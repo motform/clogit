@@ -1,7 +1,6 @@
 (ns clogit.utils
   (:require [clojure.java.io :as io])
-  (:import java.util.Arrays
-           java.security.MessageDigest))
+  (:import java.security.MessageDigest))
 
 (defn sha256
   "Credits: https://gist.github.com/kubek2k/8446062#file-sha256-clj"
@@ -23,5 +22,4 @@
 
 (defn split-bytes-by [sep bytes]
   (let [[fst _ rst] (partition-by sep bytes)]
-    [(byte-array fst)
-     (byte-array rst)]))
+    [(byte-array fst) (byte-array rst)]))
