@@ -1,19 +1,36 @@
 (ns clogit.base
+  "Higher level functionality."
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [clogit.data :as data]))
 
-(defn ignored? [entry]
-  (or
-   (str/includes? entry ".git")
-   (str/includes? entry ".ugit")))
+(declare write-tree!)
 
-(defn write-tree
-  ([] (write-tree "."))
+(defn- ignored? [entry]
+  (or
+   (str/includes? entry ".nrepl-port")
+   (str/includes? entry ".cpcache")
+   (str/includes? entry ".ugit")
+   (str/includes? entry ".git")))
+
+(defn- write-entries! [entries dir]
+  (reduce (fn [entries entry]
+            (let [path (str dir "/" entry)
+                  entry (io/file path)
+                  name (.getName entry)]
+              (conj entries
+                    (cond (ignored? name) nil
+                          (.isFile entry)      [name (data/hash-object! (slurp path)) "blob"]
+                          (.isDirectory entry) [name (write-tree! path) "tree"]))))
+          [] entries))
+
+(defn- entries->tree-obj [entries]
+  (->> entries sort (map #(str/join " " %)) (str/join "\n")))
+
+(defn write-tree!
+  ([] (write-tree! "."))
   ([dir]
-   (doseq [entry (.list (io/file dir))]
-     (let [path (str dir "/" entry)
-           entry (io/file path)]
-       (cond (ignored? entry) nil
-             (.isFile entry)  (println (data/hash-object path) path)
-             (.isDirectory entry) (write-tree path))))))
+   (-> dir io/file .list
+       (write-entries! dir)
+       entries->tree-obj
+       (data/hash-object! :tree))))

@@ -1,5 +1,5 @@
 (ns clogit.data
-  "The ns for all data/object/file-related functions.
+  "Data/object/file-related functions.
 
   I opted to use straight `java.io` calls instead of a nicer
   library like `byte-streams`, to cut down on dependencies
@@ -17,22 +17,22 @@
   (.mkdir (io/file git-dir))
   (.mkdir (io/file obj-dir)))
 
-(defn tag-with [obj type]
+(defn- tag-with [type obj]
   (let [tag (utils/key->bytes type)
         obj (utils/str->bytes obj)
         null (utils/str->bytes "\0")]
     (byte-array (concat tag null obj))))
 
-(defn hash-object
-  ([file] (hash-object file :blob))
-  ([file type]
-   (let [obj (-> file slurp (tag-with type))
+(defn hash-object!
+  ([data] (hash-object! data :blob))
+  ([data type]
+   (let [obj (tag-with type data)
          oid (utils/sha256 (String. obj))]
      (with-open [out (io/output-stream (str obj-dir oid))]
        (.write out obj))
      oid)))
 
-(defn expected-tag? [expected tag]
+(defn- expected-tag? [expected tag]
   (= (String. tag) (name expected)))
 
 (defn oid->object
@@ -44,4 +44,3 @@
        (assert (expected-tag? expected tag)
                (str "Expected " (name expected) ", got " (String. tag))))
      data)))
-
